@@ -18,7 +18,7 @@ The House Price Prediction System is a machine learning-based application that p
       a. Size (sq ft)
       b. Number of Bedrooms
       c. Age (years)
-2. Submit the form to get the predicted price based on the best-performing model.
+2. Submit to get the predicted price based on the best-performing model.
 3. Visualize the actual vs. predicted prices for further analysis.
 
 # Dataset
