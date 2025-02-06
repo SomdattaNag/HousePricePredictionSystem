@@ -14,15 +14,12 @@ df = pd.read_csv('data.csv')
 if df.isnull().sum().any():
     print("Missing values found. Filling missing values with the mean.")
     df = df.fillna(df.mean())  
-x = df[['Size (sq ft)', 'Bedrooms', 'Age (years)']]
+x = df[['Size (sq ft)', 'Rooms', 'Age (years)']]
 y = df['Price ($)']
-
-feature_name=x.columns
 sns.pairplot(df)
 plt.show()
 scaler = StandardScaler()
 x_scaled = scaler.fit_transform(x)
-
 poly = PolynomialFeatures(degree=2)
 x_poly = poly.fit_transform(x_scaled)
 xtrain, xtest, ytrain, ytest = train_test_split(x_poly, y, test_size=0.3, random_state=1)
@@ -31,19 +28,15 @@ models = {
     "Random Forest Regressor": RandomForestRegressor(n_estimators=100),
     "Support Vector Regressor": SVR(kernel='rbf')
 }
-
 best_model = None
 best_score = float('-inf')
 best_model_name = ""
-
 for name, model in models.items():
     print(f"Training {name}...")
     model.fit(xtrain, ytrain)
     ypred = model.predict(xtest)
     score = r2_score(ytest, ypred)
     print(f"R² Score for {name}: {score:.4f}")
-    
-   
     if score > best_score:
         best_score = score
         best_model = model
@@ -57,8 +50,6 @@ plt.xlabel('Actual Price')
 plt.ylabel('Predicted Price')
 plt.title(f'{best_model_name} - Actual vs Predicted')
 plt.show(block=False)
-
-
 joblib.dump(best_model, 'house_price_predictor_model.pkl')
 joblib.dump(scaler, 'scaler.pkl')
 joblib.dump(poly, 'poly_transform.pkl')  
@@ -67,12 +58,11 @@ def get_user_input():
     sample = []
     for i in range(n):
         a = []
-        for feature_name in ['Size (sq ft)', 'Bedrooms', 'Age (years)']:
+        for feature_name in ['Size (sq ft)', 'Rooms', 'Age (years)']:
             ele = float(input(f'Enter data for sample {i+1} {feature_name}: '))
             a.append(ele)
         sample.append(a)
     return np.array(sample)
-
 def make_prediction(input_data):
     model = joblib.load('house_price_predictor_model.pkl')
     scaler = joblib.load('scaler.pkl')
@@ -82,5 +72,5 @@ def make_prediction(input_data):
     predictions = model.predict(input_poly)
     for price in predictions:
         print(f"Predicted Price: ${price:.2f}")
-user_input_data = get_user_input()
-make_prediction(user_input_data)
+userinput = get_user_input()
+make_prediction(userinput)
